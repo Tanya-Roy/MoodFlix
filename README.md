@@ -5,35 +5,6 @@ MovieLens 32M catalog, a content-based TF-IDF model, DistilBERT emotion analysis
 optional Groq Whisper transcription, TMDb/Wikipedia poster lookup, and feedback
 from local named profiles.
 
-## Run in VS Code on Windows
-
-Open this folder in VS Code. In **Terminal → New Terminal**, run:
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-If PowerShell blocks environment activation, run
-`Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in that terminal,
-then activate the environment again.
-
-The cleaned MovieLens files are expected under
-`movielensRatings\ml-32m\cleaned`. If they are not present, prepare them once:
-
-```powershell
-python download_movielens_32m.py
-```
-
-## Fine-tune the local mood model
-
-Train once after installing the requirements:
-
-```powershell
-python train_distilbert_emotion.py
-```
 
 The first training run downloads the public `dair-ai/emotion` **split**
 configuration (16,000 training, 2,000 validation, and 2,000 test examples) and
@@ -53,44 +24,11 @@ macro-F1. These are dataset metrics, not a guarantee for every MoodFlix prompt
 or a measure of recommendation quality; see `evaluation.json` for per-class
 metrics and the confusion matrix.
 
-## Start the app
-
-```powershell
-python -m streamlit run app.py
-```
-
-Keep the terminal running and open the local URL Streamlit prints (normally
-`http://localhost:8501`).
 
 ## Run with Docker
 
 Install and start Docker Desktop, then build the image and start MoodFlix from
-the project folder:
-
-```powershell
-docker compose up --build
-```
-
-Open `http://localhost:8501`. The Compose setup mounts the prepared MovieLens
-32M files and fine-tuned DistilBERT model from the project folder into the
-container as read-only data. Make sure these exist first:
-
-- `movielensRatings\ml-32m\cleaned\items_with_content_features.csv`
-- `models\distilbert-emotion\config.json` and the trained model files
-
-Profile data is stored in the host's `data` folder, so it remains available
-after the container stops. To use external services, set keys in the same
-PowerShell terminal before starting Compose:
-
-```powershell
-$env:TMDB_API_KEY = "your TMDb API v3 key"
-$env:GROQ_API_KEY = "your Groq API key"
-docker compose up --build
-```
-
-Keys are passed into the container at runtime and are not added to the image.
-Stop the app with `Ctrl+C`; run `docker compose down` to remove the stopped
-container. Re-run `docker compose up --build` after changing application code.
+the project folder
 
 ## First use and returning profiles
 
@@ -118,13 +56,7 @@ until similar profiles and feedback exist, recommendations remain content-based.
 ## API keys
 
 The sidebar accepts keys at runtime, or you can set them in the VS Code
-PowerShell terminal before starting Streamlit:
-
-```powershell
-$env:TMDB_API_KEY = "your TMDb API v3 key"
-$env:GROQ_API_KEY = "your newly created Groq API key"
-python -m streamlit run app.py
-```
+PowerShell terminal before starting Streamlit
 
 Create a TMDb v3 key in your TMDb account's API settings. It is used to find
 posters and original-language metadata. If TMDb is not configured, unavailable,
@@ -168,10 +100,6 @@ guaranteed.
   wording.
 - **Offline evaluation:** after preparing the ratings CSV, compare the separate
   MovieLens collaborative model with:
-
-  ```powershell
-  python collaborative_filtering.py --evaluate-ranking --k 10 --max-users 1000
-  ```
 
   It reports Precision@10, Recall@10, and NDCG@10 on a sampled temporal split;
   this evaluates the MovieLens model, not real-world satisfaction of the
