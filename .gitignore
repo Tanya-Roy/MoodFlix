@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+.streamlit/
+data/
+models/
+movielensRatings/
+50kReviews/
+imdbMetadata/
+*.sqlite3
+*.db

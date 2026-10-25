@@ -1,0 +1,13 @@
+.venv
+**/__pycache__
+**/*.py[cod]
+.git
+.vscode
+.env
+.env.*
+data
+models
+movielensRatings
+50kReviews
+imdbMetadata
+tests

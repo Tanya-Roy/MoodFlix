@@ -1,0 +1,13 @@
+services:
+  moodflix:
+    build:
+      context: .
+    ports:
+      - "8501:8501"
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    volumes:
+      - ./movielensRatings/ml-32m/cleaned:/app/movielensRatings/ml-32m/cleaned:ro
+      - ./models/distilbert-emotion:/app/models/distilbert-emotion:ro
+      - ./data:/app/data
